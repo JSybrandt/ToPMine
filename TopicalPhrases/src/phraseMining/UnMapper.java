@@ -14,15 +14,15 @@ public class UnMapper {
 	 * @param args
 	 */
 
-	
+
 	public UnMapper(String vocFile){
 		BufferedReader br = null;
 		paraMap = new HashMap<Integer, String>();
         String sCurrentLine;
-		
+
 		try {
 			br = new BufferedReader(new FileReader(vocFile));
-			
+
 			while((sCurrentLine  = br.readLine()) != null){
 				String[] oneLine =  sCurrentLine.split("\t");
 				paraMap.put(Integer.parseInt(oneLine[1]), oneLine[0]);
@@ -38,29 +38,29 @@ public class UnMapper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getListWords(int key){
 		return this.paraMap.get(key);
 	}
-	
+
 	public String getListWords(ArrayList<Integer> phrase){
 		int len = phrase.size();
 		StringBuilder output = new StringBuilder();
-		
+
 		for(int i = 0; i < len; i++){
 			output.append( this.paraMap.get(phrase.get(i)) +" ");
 		}
 		return output.toString();
 	}
-	
+
 	public String getListWords(int[] phrase){
 		int len = phrase.length;
 		StringBuilder output = new StringBuilder();
-		
+
 		for(int i = 0; i < len; i++){
 			output.append( this.paraMap.get(phrase[i]) +" ");
 		}
 		return output.toString();
 	}
-	
+
 }

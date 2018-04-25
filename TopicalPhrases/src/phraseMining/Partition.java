@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Partition {
 	BufferedReader br = null;
-	String path; 
+	String path;
 	int vocabSize;
 	int docNum;
 	int[][] documents;
@@ -19,7 +19,7 @@ public class Partition {
 	int numWords;
 	int[] fact;
 	int maxPhrase;
-	
+
 	//
 	UnMapper unMapper;
 	UnStem unStem;
@@ -42,19 +42,19 @@ public class Partition {
 				String[] pair = para.split(":");
 				paraMap.put(pair[0],pair[1]);
 			}
-			
+
 			if(paraMap.containsKey("vocabSize")){
-				vocabSize = Integer.parseInt(paraMap.get("vocabSize")); 
+				vocabSize = Integer.parseInt(paraMap.get("vocabSize"));
 			}else{
 				System.out.println("Please specify vocabSize!");
 			}
 			if(paraMap.containsKey("docNum")){
-				docNum = Integer.parseInt(paraMap.get("docNum")); 
+				docNum = Integer.parseInt(paraMap.get("docNum"));
 			}else{
 				System.out.println("Please specify docNum!");
 			}
 			documents = new int[docNum][];
-			
+
 			int docInd = 0;
 			while ((sCurrentLine = br.readLine()) != null){
 				sCurrentLine = sCurrentLine.trim();
@@ -68,8 +68,8 @@ public class Partition {
 			}
 			this.docNum = docInd;
 		}
-			
-		
+
+
 		catch (IOException e){
 			e.printStackTrace();
 		}
@@ -81,7 +81,7 @@ public class Partition {
 				ex.printStackTrace();
 			}
 		}
-		
+
 	}
 	private void factorial(int num){
 		this.fact = new int[num+1];
@@ -100,12 +100,12 @@ public class Partition {
 	public int[][][] leftToRightPartition(int testNum, String trainFile, String testFile,String wordTrainFile, String normalLDAFile){
 		this.testNum = testNum;
 		int[][][] partitioned = new int[this.docNum][][];
-		
+
 		for (int docInd=0; docInd< this.docNum; docInd++){
 			int[] doc = documents[docInd];
 			ArrayList< int[] > newDoc = new ArrayList< int[] >();
 			int index = 0;
-			
+
 			while (index < doc.length){
 				Counter<Integer> candidate = new Counter<Integer>();
 				for (int j=0; j<doc.length - index; j++){
@@ -134,23 +134,23 @@ public class Partition {
 						break;
 					}
 				}
-				
+
 				partitioned[docInd] = new int[newDoc.size()][];
 				for(int groupInd = 0; groupInd < newDoc.size(); groupInd++){
 					partitioned[docInd][groupInd] = newDoc.get(groupInd);
 				}
-			}		
+			}
 		}
 		outputPartition(partitioned, trainFile,  testFile, wordTrainFile, normalLDAFile);
 		return partitioned;
 	}
-	public void outputPartition(int[][][] partitioned, String trainFile, 
+	public void outputPartition(int[][][] partitioned, String trainFile,
 								String testFile, String wordTrainFile, String normalLDAFile){
 		BufferedWriter training = null;
 		BufferedWriter test = null;
 		BufferedWriter wordFile = null;
 		BufferedWriter nLDAFile = null; //normal LDA,test data is the same. but the training is not
-		
+
 		try{
 			StringBuilder sb = new StringBuilder();
 			StringBuilder sb2 = new StringBuilder();
@@ -158,7 +158,7 @@ public class Partition {
 			test = new BufferedWriter(new FileWriter(testFile));
 			wordFile =  new BufferedWriter(new FileWriter(wordTrainFile));
 			nLDAFile = new BufferedWriter(new FileWriter(normalLDAFile));
-					
+
 			// write training and test parameters
 			int everyN;
 			int numTest;
@@ -170,29 +170,29 @@ public class Partition {
 				everyN = 0;
 				numTest=0;
 			}
-			; 
+			;
 			training.write("vocabSize:"+this.vocabSize+"\tdocNum:"+ (this.docNum - numTest +2) +"\n");
 			nLDAFile.write("vocabSize:"+this.vocabSize+"\tdocNum:"+ (this.docNum - numTest +2) +"\n");
 			test.write("docNum:"+numTest+"\n");
 
 			for (int i=0; i<partitioned.length; i++){
-				int[][] doc = partitioned[i];				
+				int[][] doc = partitioned[i];
 				if (everyN == 0 || i%everyN != 0){
 					for (int j=0; j<doc.length; j++){
 						int[] grp = doc[j];
 						for (int k: grp){
-							sb.append(k); 
+							sb.append(k);
 							sb2.append(k);
-							sb.append(" "); 
+							sb.append(" ");
 							sb2.append(",");
 						}
 						sb.append(",");
 					}
-					sb.setLength(sb.length()-1); 
+					sb.setLength(sb.length()-1);
 					sb2.setLength(sb2.length()-1);
-					sb.append("\n"); 
+					sb.append("\n");
 					sb2.append("\n");
-					training.write(sb.toString()); 
+					training.write(sb.toString());
 					nLDAFile.write(sb2.toString());
 					sb = new StringBuilder(); sb2 = new StringBuilder();
 				}
@@ -209,8 +209,8 @@ public class Partition {
 					test.write(sb.toString());
 					sb = new StringBuilder();
 				}
-				
-				
+
+
 				for (int j=0; j<doc.length; j++){
 					int[] grp = doc[j];
 					sb.append(unStem.getUnStemmed(unMapper.getListWords(grp).split(" "))+",");
@@ -221,7 +221,7 @@ public class Partition {
 				sb = new StringBuilder();
 			}
 		}
-		
+
 		catch (IOException e){
 			e.printStackTrace();
 		}
@@ -258,13 +258,13 @@ public class Partition {
 	public ArrayList<Integer> partitionPhrase(ArrayList<Integer> phrase){
 		return new ArrayList<Integer>();
 	}
-	
+
 	public int[][][] significanceTestingPartition(int testNum, String trainFile, String testFile,
 					String wordTrainFile,String normalLDAFile, double thresh){
 		this.testNum = testNum;
 		int[][][] partitioned = new int[this.docNum][][];
 		System.out.println("\n_____________\nTotal Document Num: "+docNum+"\n");
-		
+
 		for (int docInd=0; docInd< this.docNum; docInd++){
 			int[] doc = documents[docInd];
 			int maxPhrase = 10;
@@ -272,11 +272,11 @@ public class Partition {
 
 			int[][] partitionedDocument = pd.merge(docInd);//this docInd is just for debugging
 			partitioned[docInd]=partitionedDocument;
-			
+
 			if(docInd % 10000 == 0){
 				System.out.println("Partitioned docs: "+docInd);
 			}
-	
+
 		}
 		outputPartition(partitioned, trainFile,  testFile, wordTrainFile, normalLDAFile);
 		return partitioned;
@@ -327,9 +327,9 @@ public class Partition {
 //			break;
 //		}
 //	}
-//	
+//
 //	partitioned[docInd] = new int[newDoc.size()][];
 //	for(int groupInd = 0; groupInd < newDoc.size(); groupInd++){
 //		partitioned[docInd][groupInd] = newDoc.get(groupInd);
 //	}
-//}	
+//}

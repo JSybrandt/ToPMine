@@ -15,14 +15,14 @@ public class UnStemPhraseClass {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	
+
 	HashMap<String,HashMap<String, Integer>> candidates;
 	HashSet<String> stopWords;
 	HashMap<String, Integer> voc;
 	englishStemmer stemmer;
-	
+
 	public UnStemPhraseClass(String canFile, String stopWordFile, String vocFile) throws IOException {
 		//first, read in the candidate phrases that actually happens in the corpus
 		BufferedReader br = new BufferedReader(new FileReader(canFile));
@@ -42,7 +42,7 @@ public class UnStemPhraseClass {
 			stopWords.add(line.replaceAll("\n", ""));
 		}
 		br.close();
-		
+
 		//third, read vocFile
 		voc = new HashMap<String, Integer>();
 		br =  new BufferedReader(new FileReader(vocFile));
@@ -56,8 +56,8 @@ public class UnStemPhraseClass {
 		stemmer = new englishStemmer();
 
 	}
-	
-	
+
+
 	public void unStemPhrases(String rawFile, String outFile, int maxPattern) throws IOException{
 		String line = null;
 		BufferedReader br =  new BufferedReader(new FileReader(rawFile));
@@ -72,10 +72,10 @@ public class UnStemPhraseClass {
 		br.close();
 		outputMap(outFile);
 	}
-	
+
 	public void outputMap(String outFile) throws IOException{
 		BufferedWriter bw =  new BufferedWriter(new FileWriter(outFile));
-		
+
 		for(Map.Entry<String, HashMap<String,Integer>> entry: candidates.entrySet()){
 			String intForm = entry.getKey();
 			HashMap<String,Integer> originalForm = entry.getValue();
@@ -95,8 +95,8 @@ public class UnStemPhraseClass {
 		bw.close();
 
 	}
-		
-	
+
+
 	private void procOneDoc(String[] featureSq, int[] intSeq, boolean[] isWord, int maxPattern) {
 		int len = featureSq.length;
 
@@ -121,7 +121,7 @@ public class UnStemPhraseClass {
 				}
 			}
 		}
-		
+
 	}
 
 
@@ -142,7 +142,7 @@ public class UnStemPhraseClass {
 				candidates.get(key).put(original, new Integer(1));
 			}
 		}
-	
+
 	}
 
 
@@ -157,7 +157,7 @@ public class UnStemPhraseClass {
 				//first stem it
 				stemmer.setCurrent(w);stemmer.stem();
 				w = stemmer.getCurrent();
-				
+
 				//second, if in the voc, get the int;else, not a word
 				 if( voc.containsKey(w) ){
 					 isWord[id] = true;
@@ -168,8 +168,8 @@ public class UnStemPhraseClass {
 			}
 		}
 	}
-	
-	
+
+
 	public static void main(String[] args) throws IOException {
 		String canFile = "ap_sample_output/ap_sample_candidate";
 		String stopWordFile = "stoplists/en.txt";
@@ -177,7 +177,7 @@ public class UnStemPhraseClass {
 		String rawFile = "rawFiles/ap.txt";
 		String outFile = "ap_sample_output/ap_sample_unstemFile";
 		int maxPattern = 3;
-		
+
 		if(args.length >= 6){
 			canFile = args[0];
 			stopWordFile = args[1];
@@ -186,8 +186,8 @@ public class UnStemPhraseClass {
 			outFile = args[4];
 			maxPattern = Integer.parseInt(args[5]);
 		}
-		
-		
+
+
 		UnStemPhraseClass unstem = new UnStemPhraseClass(canFile, stopWordFile, vocFile);
 		unstem.unStemPhrases(rawFile,outFile, maxPattern);
 	}

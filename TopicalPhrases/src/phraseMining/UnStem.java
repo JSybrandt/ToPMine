@@ -15,15 +15,15 @@ public class UnStem {
 		//us.display();
 		System.out.println(us.getUnStemmed("year"));
 	}
-	
+
 	public UnStem(String vocFile){
 		BufferedReader br = null;
 		paraMap = new HashMap<String, String>();
         String sCurrentLine;
-		
+
 		try {
 			br = new BufferedReader(new FileReader(vocFile));
-			
+
 			while((sCurrentLine  = br.readLine()) != null){
 				String[] firstSplit =  sCurrentLine.split(":");
 				String key = firstSplit[0];
@@ -53,11 +53,11 @@ public class UnStem {
 		}
 	}
 
-	
+
 	public String getUnStemmed(String key){
 		return this.paraMap.get(key);
 	}
-	
+
 	public String getUnStemmed(String[] keys){
 		StringBuilder sb = new StringBuilder();
 		for(String key: keys){

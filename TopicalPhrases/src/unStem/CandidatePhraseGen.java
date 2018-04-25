@@ -12,15 +12,15 @@ import java.util.Iterator;
 
 public class CandidatePhraseGen {
 
-	
+
 	public static void main(String[] args) throws IOException {
 		//first, read the voc file
 		String parFile = "ap_sample_output/ap_sample_partitionedTraining.txt";
 		String canFile = "ap_sample_output/ap_sample_candidate";
-		
+
 		if( args.length >= 1 ) { parFile = args[0];}
 		if( args.length >= 2 ) { canFile = args[1];}
-		
+
 		BufferedReader br = new BufferedReader(new FileReader(parFile));
 		String line = br.readLine();
 		HashSet<String> hs = new HashSet<String>();
@@ -41,7 +41,7 @@ public class CandidatePhraseGen {
 			}
 		}
 		br.close();
-		
+
 		BufferedWriter bw = new BufferedWriter(new FileWriter(canFile));
 		Iterator<String> iter = hs.iterator();
 		while(iter.hasNext()){

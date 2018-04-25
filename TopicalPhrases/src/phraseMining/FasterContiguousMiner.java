@@ -94,7 +94,7 @@ import java.util.HashMap;
 //			}
 //			h = h ^ (paired ^ (paired << 16) ^ 89869747) * 2038151807;
 //			h = h & mask;
-//			
+//
 //		}
 //		h = h * 69069 + 907133923;
 //		h = h & mask;
@@ -103,7 +103,7 @@ import java.util.HashMap;
 //	}
 //	@Override
 //	public boolean equals(Object obj){
-//		
+//
 //		if (obj == null) {return false;}
 //		if (obj == this) {return true;}
 //		if (!(obj instanceof Counter)) {return false;}
@@ -127,10 +127,10 @@ import java.util.HashMap;
 //				equality = val.equals(thisObjectVal);
 //				if (!equality) {return false;}
 //			}
-//			return true;		
+//			return true;
 //		}
-//		
-//	}		
+//
+//	}
 //	public int size(){
 //		return map.size();
 //	}
@@ -154,7 +154,7 @@ import java.util.HashMap;
 //			E key = entry.getKey();
 //			all.add(key);
 //		}
-//		return all;	
+//		return all;
 //	}
 //	public Set<Map.Entry<E, Integer>> entrySet(){
 //		return map.entrySet();
@@ -173,7 +173,7 @@ import java.util.HashMap;
 //			combined.set(key, current+val);
 //		}
 //		return combined;
-//		
+//
 //	}
 //}
 class Node{
@@ -192,7 +192,7 @@ public class FasterContiguousMiner {
 	public int numWords = 0;
 	//ArrayList<BitSet> apriori;
 	Counter<Counter<Integer>> patterns = new Counter<Counter<Integer>>();
-	
+
 	public FasterContiguousMiner(String partitionFile,String infoFile, int minsup){
 		this.minsup = minsup;
 		this.importDocuments(partitionFile,infoFile);
@@ -215,15 +215,15 @@ public class FasterContiguousMiner {
 				String[] pair = para.split(":");
 				paraMap.put(pair[0],pair[1]);
 			}
-	
+
 			if(paraMap.containsKey("docNum")){
-				docNum = Integer.parseInt(paraMap.get("docNum")); 
+				docNum = Integer.parseInt(paraMap.get("docNum"));
 			}else{
 				System.out.println("Please specify docNum!");
 			}
 			documents = new int[docNum][];
 			apriori = new Node[docNum];
-			
+
 			br = new BufferedReader(new FileReader(partitionFile));
 			int docInd = 0;
 			while ((sCurrentLine = br.readLine()) != null){
@@ -260,7 +260,7 @@ public class FasterContiguousMiner {
 				ex.printStackTrace();
 			}
 		}
-				
+
 	}
 	private Node mine(int[] doc, int patternSize, Counter<Counter<Integer>> insufficientPatterns, Node docApriori){
 		int documentSize = doc.length;
@@ -282,7 +282,7 @@ public class FasterContiguousMiner {
 				Node rightNode = currNode.next;
 				// if only node is infrequent then return null as there are no more nodes to mine
 				if (null == leftNode && null == rightNode){
-					return null;	
+					return null;
 				}
 				if (null != leftNode){
 					leftNode.next=rightNode;
@@ -293,7 +293,7 @@ public class FasterContiguousMiner {
 				}
 				if (null != rightNode){
 					rightNode.prev=leftNode;
-				}			
+				}
 				cand = null;
 			}
 			else{
@@ -301,7 +301,7 @@ public class FasterContiguousMiner {
 				//cand.toString();
 				if (!patterns.containsKey(cand)){
 					int currentValue = insufficientPatterns.add(cand);
-					
+
 					if (currentValue >= this.minsup){
 						patterns.set(cand, currentValue);
 						insufficientPatterns.remove(cand);
@@ -321,7 +321,7 @@ public class FasterContiguousMiner {
 					firstNode = null;
 				}
 			}
-			currNode=currNode.next;			
+			currNode=currNode.next;
 		}
 		return firstNode;
 	}

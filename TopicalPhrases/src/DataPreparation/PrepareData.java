@@ -36,15 +36,15 @@ public class PrepareData{
 
 	static HashMap<String, HashMap<String,Integer>> voc = new HashMap<String, HashMap<String,Integer>>();
 	static HashMap<String,Integer> counter = new HashMap<String,Integer> ();
-	
+
 	/**
 	 * @param args
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	
+
 	//usage: PrepareData [inputfile] [datasetName][min_sup][startsWithID]
-	
+
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		long tStart = System.currentTimeMillis();
 
@@ -54,16 +54,16 @@ public class PrepareData{
 		int min_sup = 3;	// the minimal support it needs to satisfy
 		int startsWithID = 2; // 1 -> no doc id/no doc label;  2 -> doc id/no doc label; 3 -> with doc id and doc label
 		String stopwordFile = "stoplists/en.txt";
-		
-		
+
+
 		if(args.length >= 1){ inputFile = args[0];}
 		if(args.length >= 2){ datasetName = args[1];}
 		if(args.length >= 3){ min_sup = Integer.parseInt(args[2]);}
 		if(args.length >= 4){ startsWithID = Integer.parseInt(args[3]);}
 		if(args.length >= 5){ stopwordFile = args[4];}
 
-		
-		
+
+
 		Pattern linePattern = null;
 		if(startsWithID == 1){ // just test
 			 linePattern = Pattern.compile("()()(.*)");
@@ -72,7 +72,7 @@ public class PrepareData{
 		}else{//doc id/label
 			 linePattern = Pattern.compile("([\\w+\\-]+)\\s+(\\w+)\\s+(.*)");
 		}
-		
+
 		//check whether the dst exists
 		File folder = new File(datasetName+"_dataset/");
 		if(!folder.exists()){
@@ -87,7 +87,7 @@ public class PrepareData{
 		String stemMapping = dst +"stemMapping";
 		String rareWordFile = dst +"rareWordFile";
 		String phraseFile = dst + "phraseFile"; // this is the file for phrase mining
-		
+
 	//first pass is to find rare words
 		System.out.println("First pass: finding rare words...");
 		InstanceList instances =  createInstance(true, rareWordFile,stopwordFile);
@@ -102,25 +102,25 @@ public class PrepareData{
         	}
         }
         rareWriter.close();
-        instances = null; 
+        instances = null;
         fileReader.close();
         voc.clear(); counter = null;// clear some vocbulary
-     
+
     //second pass is to do the real preprocessing
 		System.out.println("Second pass: do preprocessing...");
 		instances =  createInstance(false, rareWordFile,stopwordFile);
         fileReader = new InputStreamReader(new FileInputStream(new File(inputFile)), "UTF-8");
         instances.addThruPipe( new CsvIterator(fileReader, linePattern,3, 2, 1));
-     
-                
+
+
     //output the mallet format
         instances.save(new File(outputFile));
-            
+
     //output the vocabulary and the unstemmed version
         Alphabet alphabet = instances.getAlphabet();
-        @SuppressWarnings("rawtypes")		
+        @SuppressWarnings("rawtypes")
         Iterator itr = alphabet.iterator();
-        
+
         Writer stemWriter = new OutputStreamWriter(new FileOutputStream(new File(stemMapping)));
         Writer vocWriter = new OutputStreamWriter(new FileOutputStream(new File(vocFile)));
 
@@ -138,19 +138,19 @@ public class PrepareData{
         }
         stemWriter.close();
         vocWriter.close();
-        
+
         //output the phrase file
         int totalTokens = 0;
-        Writer phraseWriter = new OutputStreamWriter(new FileOutputStream(new File(phraseFile)));        
+        Writer phraseWriter = new OutputStreamWriter(new FileOutputStream(new File(phraseFile)));
 
         phraseWriter.write("vocabSize:"+alphabet.size()+"\tdocNum:"+instances.size()+"\n");
-        
+
         for(Instance doc : instances){
             FeatureSequence tokens = (FeatureSequence) doc.getData();
             StringBuilder pSB = new StringBuilder();
-            
+
             totalTokens += tokens.getLength();
-            
+
             for(int pos =0 ; pos < tokens.getLength(); pos++){
             	int fi = tokens.getIndexAtPosition(pos);
             	if(pos == 0){
@@ -160,36 +160,36 @@ public class PrepareData{
             	}
             }
             pSB.append('\n');
-            
+
             phraseWriter.write(pSB.toString());
          }
         phraseWriter.close();
-        
+
         System.out.println("\n---------------------------");
         System.out.println("The number of documents: " + instances.size());
         System.out.println("The size of the vocabulary: " + alphabet.size());
         System.out.println("Total tokens: " + totalTokens);
         System.out.println("Minsup = " + min_sup );
-        
+
         long tEnd = System.currentTimeMillis();
         long tDelta = tEnd - tStart;
         double elapsedSeconds = tDelta / 1000.0;
         System.out.println("Time used: " + elapsedSeconds);
-       
+
 	}
-	
+
 	public static InstanceList createInstance(boolean isFirstPass, String rareWordFile,String stopwordFile){
 		 // Begin by importing documents from text to feature sequences
         ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
-        
+
         // Pipes: lowercase, tokenize, remove stopwords, map to features
         pipeList.add( new CharSequenceLowercase() );
         //pipeList.add( new CharSequence2TokenSequence(CharSequenceLexer.LEX_ALPHA));
       pipeList.add( new CharSequence2TokenSequence(Pattern.compile ("\\p{Alpha}+-*\\p{Alpha}+")));
-        
+
         //remove stop words
         pipeList.add( new TokenSequenceRemoveStopwords(new File(stopwordFile), "UTF-8", false, false, false) );
-        
+
     	if(isFirstPass){
         	pipeList.add( new EnglishStemming(null, counter)); // at first pass, i only need to find rare words, so no need to record the unstemmed version
     	}else{
@@ -201,7 +201,7 @@ public class PrepareData{
     	pipeList.add( new TokenSequence2FeatureSequence() );
 
         return new InstanceList (new SerialPipes(pipeList));
-        	
+
 	}
 
 }
@@ -214,12 +214,12 @@ class EnglishStemming extends Pipe implements Serializable {
 		this.voc = voc;
 		this.counter = counter;
 	}
-	
+
 	public EnglishStemming(HashMap<String, HashMap<String,Integer>> voc) {
 		this.voc = voc;
 		this.counter = null;
 	}/**/
-	
+
 	public EnglishStemming(){
 		voc = null;
 		counter = null;
@@ -234,7 +234,7 @@ class EnglishStemming extends Pipe implements Serializable {
 			stemmer.stem();
 			String stemmed = stemmer.getCurrent();
 			token.setText(stemmed);
-			
+
 			// store unstemmed version
 			if(voc != null ){
 				if( voc.containsKey(stemmed) ){
@@ -250,7 +250,7 @@ class EnglishStemming extends Pipe implements Serializable {
 					voc.put(stemmed, tmpMap);
 				}
 			}
-			
+
 			//store the counter
 			if( counter != null){
 				if(counter.containsKey(stemmed)){
@@ -264,15 +264,15 @@ class EnglishStemming extends Pipe implements Serializable {
 		return carrier;
 	}
 
-	// Serialization 
-	
+	// Serialization
+
 	private static final long serialVersionUID = 1;
 	private static final int CURRENT_SERIAL_VERSION = 0;
-	
+
 	private void writeObject (ObjectOutputStream out) throws IOException {
 		out.writeInt (CURRENT_SERIAL_VERSION);
 	}
-	
+
 	private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
 		@SuppressWarnings("unused")
 		int version = in.readInt ();

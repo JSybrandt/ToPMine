@@ -71,7 +71,7 @@ class Significance{
 class GroupComparator implements Comparator<Group>{
 	@Override
 	public int compare(Group a, Group b){
-		
+
 		//if a and b both not check or both not checked
 		//if( !a.isChecked && !b.isChecked){
 			if (a.sigRight<b.sigRight){
@@ -100,31 +100,31 @@ class Group{
 	Group leftGroup;
 	Significance sig;
 	double sigRight;
-	
+
 	//for order
 	int startInd;
 	int endInd;
-	
+
 	//if the merge makes the significance value to be larger, then merge
 //	double curSig;
 //	boolean isChecked; //once we find a group is checked, then do nothing
-	
+
 	public Group(Counter<Integer> grp, Significance sig, int startInd, int endInd){
 		this.grp = grp;
 		this.rightCounter = null;
 		this.rightGroup = null;
 		this.leftGroup = null;
 		this.sig = sig;
-		
+
 		//for order
 		this.startInd = startInd;
 		this.endInd = endInd;
-		
+
 		//the merge makes the significance value to be larger, then merge
 //		this.curSig = Double.NEGATIVE_INFINITY;// there is no curSig
 //		this.isChecked = false;
 	}
-	
+
 	public void setStartInd(int startInd) {this.startInd = startInd;}
 	public void setEndInd(int endInd) {this.endInd = endInd;}
 
@@ -158,7 +158,7 @@ class Group{
 		}
 
 	}
-	
+
 //	public void setEqualCurSig(){
 //		this.curSig = this.sigRight;
 //	}
@@ -170,21 +170,21 @@ public class PartitionDocument {
 	int maxPhrase;
 	int[] document;
 	double threshold;
-	Significance sig; 
+	Significance sig;
 	PriorityQueue<Group> pq;
 	int numWords;
-	
+
 	UnMapper unMapper;
 	UnStem unStem;
 
-	
-	public PartitionDocument(Counter<Counter<Integer>> patterns, int maxPhrase,int numWords, int[] document, double threshold, 
+
+	public PartitionDocument(Counter<Counter<Integer>> patterns, int maxPhrase,int numWords, int[] document, double threshold,
 				UnMapper unMapper,	UnStem unStem){
 		//just for debug
 		this.unMapper = unMapper;
 		this.unStem = unStem;
 		this.numWords = numWords;
-		
+
 		this.document = document;
 		this.patterns = patterns;
 		this.maxPhrase = maxPhrase;
@@ -193,10 +193,10 @@ public class PartitionDocument {
 		Comparator<Group> comparator = new GroupComparator();
 		pq = new PriorityQueue<Group>(document.length, comparator);
 	}
-	
+
 	public int[][] merge(int docInd){
 //		if(docInd == 102) printArray(document);
-		
+
 		int numberOfGroups = document.length;
 		if (document.length <= 1){
 			//need to replace with single word partition or empty partition
@@ -210,29 +210,29 @@ public class PartitionDocument {
 		prevPhrase.add(document[0]);
 		Group grp = new Group(prevPhrase, this.sig, 0, 0);//initial, the start=end=0
 		firstGroup = grp;
-		
+
 		// initialize all groups
 		for (int i=1; i<document.length; i++){
 			Counter<Integer> phrase = new Counter<Integer>();
 			phrase.add(document[i]);
-			
+
 			Group nextGrp = new Group(phrase, sig,i,i);
 			nextGrp.leftGroup = grp;
 			grp.addRightCounter(phrase);
 			grp.addRightGroup(nextGrp);
 			grp = nextGrp;
 
-			
+
 		}
 		//calculate significance for all groups and add to priority queue
 		grp = firstGroup;
 		while (null != grp){
-			grp.recalculateSignificance();			
+			grp.recalculateSignificance();
 			this.pq.add(grp);
-			
+
 			grp = grp.rightGroup;
 		}
-		
+
 		// begin merging the partition
 		while ( numberOfGroups > 1){
 			Group bestGroup = pq.remove();
@@ -247,11 +247,11 @@ public class PartitionDocument {
 			}
 			else {
 //				double newSigValue = this.sig.significance(bestGroup.grp, bestGroup.rightCounter);
-				
+
 //				if(bestGroup.grp.size()>=2 ){//&&  newSigValue <= bestGroup.curSig
 //					//for unigram, we don't do anything
 //					//if the merge doesn't create higher sig
-//					
+//
 //					bestGroup.isChecked = true;
 //					pq.add(bestGroup);// add it back
 //				}
@@ -259,10 +259,10 @@ public class PartitionDocument {
 					// if the merge creates higher significance value
 
 					Counter<Integer> combinedCounter = Counter.union(bestGroup.grp,bestGroup.rightCounter);
-					
+
 					// update everything
 					//System.out.println(combinedCounter.toString());
-					
+
 					//for debug
 //					if (combinedCounter.size()>=3){
 //						System.out.println("##############");
@@ -282,7 +282,7 @@ public class PartitionDocument {
 //						System.out.println("combined count:\t"+this.patterns.get(combinedCounter));
 //						System.out.println("Total count:\t" + this.numWords);
 //						System.out.println("XXXXXXXXXXXXXX");
-//						
+//
 //					}
 					bestGroup.grp = combinedCounter;
 					Group leftGroup = bestGroup.leftGroup;
@@ -299,15 +299,15 @@ public class PartitionDocument {
 					if (null == twoGroupsDown){
 						bestGroup.addRightCounter(null);
 					}
-					else{	
+					else{
 						bestGroup.addRightCounter(twoGroupsDown.grp);
 						twoGroupsDown.leftGroup=bestGroup;
 					}
-					
-					
+
+
 //					if (combinedCounter.size() == 1){
 //						System.out.println("#######");
-//						System.out.println(bestGroup.sigRight);		
+//						System.out.println(bestGroup.sigRight);
 //						if( twoGroupsDown != null){
 //							System.out.println(this.sig.significance(combinedCounter, twoGroupsDown.grp));
 //						}
@@ -319,22 +319,22 @@ public class PartitionDocument {
 //					System.out.println(combinedCounter.toString());
 //					System.out.println("XXXXXXX");
 //				}
-					
+
 
 					bestGroup.setEndInd(oneGroupDown.endInd);
 
 					bestGroup.addRightGroup(twoGroupsDown);
 //					bestGroup.setEqualCurSig();//keep the current significance score
-	
+
 					bestGroup.recalculateSignificance();
 
-					
+
 					pq.add(bestGroup);
 					numberOfGroups-=1;
-					
+
 			}//else
 		}//while
-	
+
 		int[][] newDoc = new int[numberOfGroups][];
 		for (int i=0; i<numberOfGroups; i++){
 			//////
@@ -360,12 +360,12 @@ public class PartitionDocument {
 //				System.out.println(firstGroup.endInd);
 //				System.out.println("XXXXX");
 //			}
-			firstGroup=firstGroup.getRightGroup();		
+			firstGroup=firstGroup.getRightGroup();
 		}
 
 		return newDoc;
-		
-		
+
+
 	}
 	public int[] getOrderedGroup(int startInd, int endInd){
 		int len = endInd - startInd +1;
@@ -374,10 +374,10 @@ public class PartitionDocument {
 			output[i] = this.document[startInd+i];
 		}
 		return output;
-		
+
 	}
 
-	
+
 	public void printArray(ArrayList<Integer> al){
 		StringBuilder sb = new StringBuilder();
 		for(int ele: al){
@@ -385,7 +385,7 @@ public class PartitionDocument {
 		}
 		System.out.println(sb.toString());
 	}
-	
+
 	public void printArray(int[] array){
 		StringBuilder sb = new StringBuilder();
 		for(int ele: array){
