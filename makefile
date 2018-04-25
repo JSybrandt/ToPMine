@@ -22,14 +22,6 @@ CLASSPATH = $E/snowball.jar:$E/mallet.jar
 #replace colons with spaces for extern dependencies
 EXTERNS=$(subst :, , $(CLASSPATH))
 
-# go thru each dir and find src files
-SOURCES = $(foreach DIR, $(DIRS), $(wildcard $S/$(DIR)/*.java))
-# replace src path with bin path
-TMP = $(foreach SRC, $(SOURCES), $(SRC:$S/%=$B/%))
-# replace java ext with class
-CLASSES = $(foreach SRC, $(TMP), $(SRC:.java=.class))
-
-
 CLASSDIRS= $(addprefix $B/, $(DIRS))
 
 all: $(CLASSDIRS)
