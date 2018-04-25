@@ -1,6 +1,8 @@
 #!/bin/bash
 
-inputFile='../rawFiles/dblp_titles.txt'
+source setEnv.sh
+
+inputFile='../rawFiles/abstracts.raw.mini.txt'
 # minimum phrase frequency
 minsup=10
 #maximum size of phrase (number of words)

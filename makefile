@@ -29,7 +29,7 @@ all: $(CLASSDIRS)
 # build each proj dir
 $B/%: $S/% $(EXTERNS)
 	mkdir -p $@ ; \
-	$(CC) -classpath $(CLASSPATH) -d $@ $(wildcard $</*.java)
+	$(CC) -classpath $(CLASSPATH) -d $@/../ $(wildcard $</*.java)
 
 $E/snowball.jar:
 	wget -O $@.zip $(SNOWBALL_URL) ; unzip -p $@.zip > $@ ; rm -f $@.zip
