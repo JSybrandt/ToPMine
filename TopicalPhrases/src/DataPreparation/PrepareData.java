@@ -185,7 +185,10 @@ public class PrepareData{
         // Pipes: lowercase, tokenize, remove stopwords, map to features
         pipeList.add( new CharSequenceLowercase() );
         //pipeList.add( new CharSequence2TokenSequence(CharSequenceLexer.LEX_ALPHA));
-      pipeList.add( new CharSequence2TokenSequence(Pattern.compile ("\\p{Alpha}+-*\\p{Alpha}+")));
+        // CHANGE: Justin Sybrandt
+        //A token is any series of non-whitespace characters
+        pipeList.add(new CharSequence2TokenSequence(Pattern.compile("[^\\s]+")));
+      //pipeList.add( new CharSequence2TokenSequence(Pattern.compile ("\\p{Alpha}+-*\\p{Alpha}+")));
 
         //remove stop words
         pipeList.add( new TokenSequenceRemoveStopwords(new File(stopwordFile), "UTF-8", false, false, false) );
