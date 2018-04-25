@@ -1,10 +1,6 @@
 #!/bin/bash
 
-binFolder="bin/"
-jarFolder="lib/mallet.jar"
-classpath="$binFolder:$jarFolder"
 classname="topicmodel/RunPhraseLDA"
-echo $classpath
 
 #input
 trainFile="subset_abstract_output/subset_abstract_partitionedTraining.txt" 		# the training File 	e.g. dblp_titles_partitionedTraining
@@ -31,4 +27,4 @@ echo $K
 echo $iter
 echo $alpha
 echo $beta
-java -cp $classpath  $classname $trainFile $testFile $wordTopicAssign $topicFile $paraFile $K $iter $usePhraseLDA $optBurnin $alpha $optInterval $beta
+java $MEM_FLG $classname $trainFile $testFile $wordTopicAssign $topicFile $paraFile $K $iter $usePhraseLDA $optBurnin $alpha $optInterval $beta

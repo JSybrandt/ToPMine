@@ -23,6 +23,6 @@ java $MEM_FLG $className $inputFile $datasetName $minsup $startsWithID $stopword
 #second run parepare partition
 echo ___
 className="DataPreparation/PreparePartitionFile"
-java $MEM_FLG $BIN_DIR/$className $inputFile $datasetName $startsWithID
+java $MEM_FLG $className $inputFile $datasetName $startsWithID
 echo ___
 

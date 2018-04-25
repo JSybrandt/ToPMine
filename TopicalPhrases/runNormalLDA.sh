@@ -1,8 +1,5 @@
 #!/bin/bash
 
-binFolder="bin/"
-jarFolder="lib/mallet.jar"
-classpath="$binFolder:$jarFolder"
 classname="topicmodel/RunPhraseLDA"
 echo $classpath
 
@@ -29,4 +26,4 @@ echo $topicFile
 echo $paraFile
 echo $K
 echo $iter
-java -Xmx20g -cp $classpath  $classname $trainFile $testFile $wordTopicAssign $topicFile $paraFile $K $iter $usePhraseLDA $optBurnin $alpha $optInterval $beta
+java $MEM_FLG $classname $trainFile $testFile $wordTopicAssign $topicFile $paraFile $K $iter $usePhraseLDA $optBurnin $alpha $optInterval $beta

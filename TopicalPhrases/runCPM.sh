@@ -1,9 +1,5 @@
 #!/bin/bash
 
-binFolder="bin"
-classpath="$binFolder"
-className="phraseMining/MineContiguousPatterns"
-
 inFolder="input_dataset/"  #input folder, don't forger "/"
 outFolder="input_dataset_output/" #output folder don't forget "/"
 dataName="input" # dataset name
@@ -17,4 +13,5 @@ echo $dataName
 echo $minsup
 echo $testNum
 
-java -Xmx6g -cp $classpath  $className $inFolder $outFolder $dataName $minsup $testNum $thresh $maxPattern
+className="phraseMining/MineContiguousPatterns"
+java $MEM_FLG $className $inFolder $outFolder $dataName $minsup $testNum $thresh $maxPattern
