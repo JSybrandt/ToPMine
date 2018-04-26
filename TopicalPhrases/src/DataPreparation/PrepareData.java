@@ -68,9 +68,9 @@ public class PrepareData{
 		if(startsWithID == 1){ // just test
 			 linePattern = Pattern.compile("()()(.*)");
 		}else if(startsWithID == 2){//doc id/ no label: the docid may contain -
-			 linePattern = Pattern.compile("([\\w+\\-]+)\\s+()(.*)");
+			 linePattern = Pattern.compile("([^\\s]+)\\s+()(.*)");
 		}else{//doc id/label
-			 linePattern = Pattern.compile("([\\w+\\-]+)\\s+(\\w+)\\s+(.*)");
+			 linePattern = Pattern.compile("([^\\s]+)\\s+([^\\s]+)\\s+(.*)");
 		}
 
 		//check whether the dst exists
