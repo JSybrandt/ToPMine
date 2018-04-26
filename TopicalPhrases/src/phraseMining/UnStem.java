@@ -55,7 +55,11 @@ public class UnStem {
 
 
 	public String getUnStemmed(String key){
-		return this.paraMap.get(key);
+    if(this.paraMap.containsKey(key)){
+	    return this.paraMap.get(key);
+    } else {
+      return "";
+    }
 	}
 
 	public String getUnStemmed(String[] keys){

@@ -2,18 +2,20 @@
 
 source setEnv.sh
 
+./cleanTmp.sh
+
 echo "Classpath: $CLASSPATH"
 
 inputFile='../rawFiles/abstracts.raw.mini.txt'
 # minimum phrase frequency
-minsup=10
+minsup=5
 #maximum size of phrase (number of words)
 maxPattern=8
 #Two variations of phrase lda (1 and 2). Default topic model is 2
 topicModel=2
-numTopics=5
+numTopics=20
 #set to 0 for no topic modeling and > 0 for topic modeling (around 1000)
-gibbsSamplingIterations=0
+gibbsSamplingIterations=10
 #significance threshold for merging unigrams into phrases
 thresh=4
 #burnin before hyperparameter optimization
@@ -36,8 +38,6 @@ cd TopicalPhrases
 #Copy to output
 cp input_dataset_output/newPartition.txt ../output/corpus.txt
 cp input_dataset_output/input_wordTopicAssign.txt ../output/topics.txt
-rm input_dataset/*
-rm input_dataset_output/*
 cd ..
 cd output
 ./topPhrases.py
