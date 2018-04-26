@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo $1
 if [ ! -f "$1" ]; then
   echo "Must supply a data file as arg 1."
   exit 1
