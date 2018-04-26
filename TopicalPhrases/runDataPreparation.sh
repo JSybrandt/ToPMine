@@ -15,9 +15,9 @@ echo $startsWithID
 
 #first run prepare data
 echo ___
+echo "Warning: This is going to write a logging error, unimportant."
 className="DataPreparation/PrepareData"
-echo java $MEM_FLG $className $inputFile $datasetName $minsup $startsWithID $stopwordFile
-java $MEM_FLG $className $inputFile $datasetName $minsup $startsWithID $stopwordFile
+java $MEM_FLG -cp $CLASSPATH $className $inputFile $datasetName $minsup $startsWithID $stopwordFile
 
 
 #second run parepare partition

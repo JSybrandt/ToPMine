@@ -18,9 +18,9 @@ import java.util.regex.Pattern;
 
 import org.tartarus.snowball.ext.englishStemmer;
 
+import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
-import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;

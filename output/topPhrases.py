@@ -1,5 +1,7 @@
-f = open('corpus.txt','r')
-g = open('topPhrases.txt','w')
+#!/usr/bin/env python3
+
+f = open('corpus.txt', 'r')
+g = open('topPhrases.txt', 'w')
 phrases = {}
 for line in f:
     line = line.strip().split(',')

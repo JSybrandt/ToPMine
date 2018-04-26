@@ -2,6 +2,8 @@
 
 source setEnv.sh
 
+echo "Classpath: $CLASSPATH"
+
 inputFile='../rawFiles/abstracts.raw.mini.txt'
 # minimum phrase frequency
 minsup=10
@@ -30,7 +32,7 @@ cd TopicalPhrases
 #Run post processing (insert stop words and unstem properly)
 ./createUnStem.sh $inputFile $maxPattern
 #Recreate original corpus
-python unMapper.py input_dataset/input_vocFile input_dataset/input_stemMapping input_dataset_output/unmapped_phrases input_dataset_output/input_partitionedTraining.txt input_dataset_output/newPartition.txt
+./unMapper.py input_dataset/input_vocFile input_dataset/input_stemMapping input_dataset_output/unmapped_phrases input_dataset_output/input_partitionedTraining.txt input_dataset_output/newPartition.txt
 #Copy to output
 cp input_dataset_output/newPartition.txt ../output/corpus.txt
 cp input_dataset_output/input_wordTopicAssign.txt ../output/topics.txt
@@ -38,6 +40,6 @@ rm input_dataset/*
 rm input_dataset_output/*
 cd ..
 cd output
-python topPhrases.py
-python topTopics.py
+./topPhrases.py
+./topTopics.py
 mv *.txt outputFiles
