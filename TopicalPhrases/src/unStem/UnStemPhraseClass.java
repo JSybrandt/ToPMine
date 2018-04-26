@@ -63,7 +63,8 @@ public class UnStemPhraseClass {
 		BufferedReader br =  new BufferedReader(new FileReader(rawFile));
 
 		while((line = br.readLine()) != null){
-			String[] featureSq = line.replaceAll("\\d","").split("\\W");
+      String[] featureSq = line.split(" ");
+			//String[] featureSq = line.replaceAll("\\d","").split("\\W");
 			int[] intSeq = new int[featureSq.length];
 			boolean[] isWord = new boolean[featureSq.length];
 			checkOneDoc(featureSq, intSeq, isWord);

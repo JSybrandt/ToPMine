@@ -4,7 +4,7 @@
 parFile="input_dataset_output/input_partitionedTraining.txt"	#partitio file
 canFile="input_dataset_output/candidate"	#candidate file
 
-stopWordFile="stoplists/en.txt" #stop words file
+stopWordFile="stoplists/custom.txt" #stop words file
 vocFile="input_dataset/input_vocFile"      #voc file
 rawFile=$1      #raw file
 outFile="input_dataset_output/unmapped_phrases"
