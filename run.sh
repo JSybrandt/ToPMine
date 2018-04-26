@@ -1,12 +1,17 @@
 #!/bin/bash
 
+if [ ! -f "$1" ]; then
+  echo "Must supply a data file as arg 1."
+  exit 1
+fi
+
 source setEnv.sh
 
 ./cleanTmp.sh
 
 echo "Classpath: $CLASSPATH"
 
-inputFile='../rawFiles/abstracts.raw.mini.txt'
+inputFile=$1
 # minimum phrase frequency
 minsup=5
 #maximum size of phrase (number of words)
