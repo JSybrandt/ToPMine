@@ -69,8 +69,10 @@ public class PrepareData{
        linePattern = Pattern.compile("()()(.*)");
     }else if(startsWithID == 2){//doc id/ no label: the docid may contain -
        linePattern = Pattern.compile("([^\\s]+)\\s+()(.*)");
-    }else{//doc id/label
+    }else if(startsWithID == 3){//doc id/label
        linePattern = Pattern.compile("([^\\s]+)\\s+([^\\s]+)\\s+(.*)");
+    } else { //meta . text (no label)
+      linePattern = Pattern.compile("([^\\.]+)\\s+\\.\\s+()(.*)");
     }
 
     //check whether the dst exists
@@ -96,9 +98,11 @@ public class PrepareData{
     Writer rareWriter = new OutputStreamWriter(new FileOutputStream(new File(rareWordFile)));
     //write the rare words, and they are used as stop words later
     for(String word : counter.keySet()){
-      int tmpCnt = counter.get(word);
-      if(tmpCnt < min_sup){
-        rareWriter.write(word+"\n");
+      if(!word.startsWith("PMID")){
+        int tmpCnt = counter.get(word);
+        if(tmpCnt < min_sup){
+          rareWriter.write(word+"\n");
+        }
       }
     }
     rareWriter.close();
@@ -145,6 +149,7 @@ public class PrepareData{
     phraseWriter.write("vocabSize:"+alphabet.size()+"\tdocNum:"+instances.size()+"\n");
 
     for(Instance doc : instances){
+        //System.out.println(doc.getName());
         FeatureSequence tokens = (FeatureSequence) doc.getData();
         StringBuilder pSB = new StringBuilder();
 
@@ -191,18 +196,47 @@ public class PrepareData{
         //remove stop words
         pipeList.add( new TokenSequenceRemoveStopwords(new File(stopwordFile), "UTF-8", false, false, false) );
 
+      // adds names in as unchaned words
+      pipeList.add(new NameAdder());
+
       if(isFirstPass){
           pipeList.add( new EnglishStemming(null, counter)); // at first pass, i only need to find rare words, so no need to record the unstemmed version
       }else{
           pipeList.add( new EnglishStemming(voc)); // do stemming and at the same time find the unstemmed version
           pipeList.add( new TokenSequenceRemoveStopwords(new File(rareWordFile), "UTF-8", false, false, false) );
-        }
+      }
+
 
       //make it become feature sequence, something mallet needs
       pipeList.add( new TokenSequence2FeatureSequence() );
 
       return new InstanceList (new SerialPipes(pipeList));
 
+  }
+
+}
+
+class NameAdder extends Pipe implements Serializable {
+  public Instance pipe(Instance carrier){
+    String name = new String((String) carrier.getName());
+    name = name.replace(' ', '_');
+    ((TokenSequence)carrier.getData())
+      .add(0, new Token(name));
+    return carrier;
+  }
+  //
+  // Serialization
+
+  private static final long serialVersionUID = 1;
+  private static final int CURRENT_SERIAL_VERSION = 0;
+
+  private void writeObject (ObjectOutputStream out) throws IOException {
+    out.writeInt (CURRENT_SERIAL_VERSION);
+  }
+
+  private void readObject (ObjectInputStream in) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unused")
+    int version = in.readInt ();
   }
 
 }
