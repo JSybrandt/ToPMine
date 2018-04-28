@@ -3,8 +3,8 @@
 #java arguments
 inputFile=$1 #the raw text file
 datasetName="input"; # create a folder with the same name, and store all files under this folder
-minsup=1	# the minimal support a word needs to satisfy
-startsWithID=1 # 1 -> no doc id/no doc label;  2 -> doc id/no doc label; 3 -> with doc id and doc label
+minsup=5	# the minimal support a word needs to satisfy
+startsWithID=3 # 1 -> no doc id/no doc label;  2 -> doc id/no doc label; 3 -> with doc id and doc label
 stopwordFile='stoplists/custom.txt'
 
 echo $inputFile
