@@ -5,13 +5,12 @@
 cd $PBS_O_WORKDIR
 
 
-#echo $1
-#if [ ! -f "$1" ]; then
-  #echo "Must supply a data file as arg 1."
-  #exit 1
-#fi
-# inputFile=$1
-inputFile=/scratch2/jsybran/moliere_2017/processedText/abstracts.raw.filtered.txt 
+echo $1
+if [ -f "$1" ]; then
+  inputFile=$1
+else
+  inputFile=/scratch2/jsybran/moliere_2017/processedText/abstracts.raw.filtered.txt
+fi
 
 source setEnv.sh
 
@@ -54,4 +53,5 @@ cd ..
 cd output
 ./topPhrases.py
 ./topTopics.py
+mkdir outputFiles
 mv *.txt outputFiles
