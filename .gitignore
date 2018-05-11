@@ -2,3 +2,5 @@ bin/
 external/
 rawFiles/
 *.log
+run.sh.e*
+run.sh.o*
