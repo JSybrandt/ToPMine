@@ -1,10 +1,17 @@
 #!/bin/bash
+#PBS -l select=1:ncpus=64:mem=1950gb,walltime=72:00:00
+#PBS -q bigmem
 
-echo $1
-if [ ! -f "$1" ]; then
-  echo "Must supply a data file as arg 1."
-  exit 1
-fi
+cd $PBS_O_WORKDIR
+
+
+#echo $1
+#if [ ! -f "$1" ]; then
+  #echo "Must supply a data file as arg 1."
+  #exit 1
+#fi
+# inputFile=$1
+inputFile=/scratch2/jsybran/moliere_2017/processedText/abstracts.raw.filtered.txt 
 
 source setEnv.sh
 
@@ -12,16 +19,15 @@ source setEnv.sh
 
 echo "Classpath: $CLASSPATH"
 
-inputFile=$1
 # minimum phrase frequency
-minsup=5
+minsup=30
 #maximum size of phrase (number of words)
 maxPattern=8
 #Two variations of phrase lda (1 and 2). Default topic model is 2
 topicModel=2
 numTopics=20
 #set to 0 for no topic modeling and > 0 for topic modeling (around 1000)
-gibbsSamplingIterations=10
+gibbsSamplingIterations=0
 #significance threshold for merging unigrams into phrases
 thresh=4
 #burnin before hyperparameter optimization
