@@ -171,6 +171,8 @@ public class Partition {
 				numTest=0;
 			}
 			;
+
+      System.out.println("Starting to write files...");
 			training.write("vocabSize:"+this.vocabSize+"\tdocNum:"+ (this.docNum - numTest +2) +"\n");
 			nLDAFile.write("vocabSize:"+this.vocabSize+"\tdocNum:"+ (this.docNum - numTest +2) +"\n");
 			test.write("docNum:"+numTest+"\n");
@@ -220,11 +222,16 @@ public class Partition {
 				wordFile.write(sb.toString());
 				sb = new StringBuilder();
 			}
+      System.out.println("Finished!");
 		}
 
 		catch (IOException e){
 			e.printStackTrace();
 		}
+    catch (Exception e){
+      System.err.println("Unknown Exception...");
+      e.printStackTrace();
+    }
 		finally {
 			try {
 					br.close();
@@ -278,6 +285,8 @@ public class Partition {
 			}
 
 		}
+
+    System.out.println("Writing partitions,");
 		outputPartition(partitioned, trainFile,  testFile, wordTrainFile, normalLDAFile);
 		return partitioned;
 	}

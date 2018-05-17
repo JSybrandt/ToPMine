@@ -21,21 +21,21 @@ echo "Classpath: $CLASSPATH"
 # minimum phrase frequency
 minsup=30
 #maximum size of phrase (number of words)
-maxPattern=8
+maxPattern=6
 #Two variations of phrase lda (1 and 2). Default topic model is 2
-topicModel=2
+topicModel=1
 numTopics=20
 #set to 0 for no topic modeling and > 0 for topic modeling (around 1000)
 gibbsSamplingIterations=0
 #significance threshold for merging unigrams into phrases
-thresh=4
+thresh=25
 #burnin before hyperparameter optimization
 optimizationBurnIn=100
 #alpha hyperparameter
 alpha=2
 #optimize hyperparameters every n iterations
 optimizationInterval=50
-cd TopicalPhrases 
+cd TopicalPhrases
 #Run Data preprocessing
 ./runDataPreparation.sh $inputFile
 #Run frequent phrase mining
